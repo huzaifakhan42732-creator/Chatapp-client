@@ -1,0 +1,164 @@
+/* === GLOBAL STYLING === */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  height: 100vh;
+  width: 100vw;
+
+  /* ✅ Full-screen background image with dark overlay */
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
+    url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d") no-repeat center center/cover;
+
+  color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* === APP CONTAINER === */
+.app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* === LOGIN CARD (Glass Style) === */
+.login-card {
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  width: 350px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.25);
+
+  /* ✨ Glass Blur */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+}
+
+/* === TITLE === */
+.neon-text {
+  color: #00ffff;
+  text-shadow: 0 0 10px #00ffff, 0 0 25px #00ffff;
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+/* === INPUTS === */
+.login-card input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  background: rgba(17, 17, 17, 0.85);
+  color: white;
+}
+
+/* === BUTTON === */
+.login-card button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #00ffff;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-card button:hover {
+  background: #00cccc;
+  transform: translateY(-2px);
+}
+
+/* === FADE-IN ANIMATION === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* === RESPONSIVE FIXES === */
+@media (max-width: 768px) {
+  .login-card {
+    width: 85%;
+    padding: 2rem 1.5rem;
+  }
+
+  .neon-text {
+    font-size: 1.8rem;
+  }
+
+  .quote {
+    font-size: 0.95rem;
+  }
+
+  body {
+    background-position: center;
+    background-size: cover;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    width: 90%;
+    padding: 1.8rem 1.2rem;
+  }
+
+  .neon-text {
+    font-size: 1.6rem;
+  }
+
+  .quote {
+    font-size: 0.9rem;
+  }
+}
+.clear-btn {
+  background: transparent;
+  border: 1px solid #00ffff55;
+  color: #00ffff;
+  padding: 6px 12px;
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.clear-btn:hover {
+  background: #00ffff22;
+}
+
+.message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: #ff6666;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 8px;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
+}
+
