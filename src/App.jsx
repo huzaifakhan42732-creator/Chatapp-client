@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 
 // ✅ Use your deployed frontend link (Vercel one)
-const FRONTEND_URL = "https://localhost:5050";
+const FRONTEND_URL = "https://chatapp-server-production-b48e.up.railway.app";
 
 // ✅ Allow CORS for your frontend
 app.use(cors({
