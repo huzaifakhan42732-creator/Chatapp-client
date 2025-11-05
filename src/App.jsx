@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 
-const SOCKET_URL = "http://localhost:5050";
+const SOCKET_URL = "https://tiny-backend-production-6aa8.up.railway.app";
+
 let socket;
 
 function App() {
