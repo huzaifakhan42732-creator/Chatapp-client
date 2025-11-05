@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 
-const SOCKET_URL = "https://tiny-backend-production-6aa8.up.railway.app";
+const SOCKET_URL = "https://chatapp-server-production-b48e.up.railway.app";
 
 let socket;
 
