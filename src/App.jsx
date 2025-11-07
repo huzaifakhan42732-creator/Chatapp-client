@@ -1,57 +1,151 @@
-import express from "express";
-import http from "http";
-import { Server } from "socket.io";
-import cors from "cors";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import "./App.css";
 
-const app = express();
-const server = http.createServer(app);
+// 🚀 Your deployed backend URL on Railway
+const SOCKET_URL = "http://localhost:5050";
+let socket;
 
-// ✅ Use your deployed frontend link (Vercel one)
-const FRONTEND_URL = "https://chatapp-server-production-b48e.up.railway.app";
+function App() {
+  const [joined, setJoined] = useState(false);
+  const [name, setName] = useState("");
+  const [group, setGroup] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
 
-// ✅ Allow CORS for your frontend
-app.use(cors({
-  origin: [FRONTEND_URL],
-  methods: ["GET", "POST"],
-  credentials: true
-}));
+  // 🔌 Connect to Socket.io backend
+  useEffect(() => {
+    socket = io(SOCKET_URL, {
+      transports: ["websocket", "polling"],
+    });
 
-// ✅ Setup Socket.io with same CORS
-const io = new Server(server, {
-  cors: {
-    origin: [FRONTEND_URL],
-    methods: ["GET", "POST"],
-  },
-});
+    socket.on("connect", () => console.log("✅ Connected to Socket.io Server"));
+    socket.on("disconnect", () => console.log("❌ Disconnected from Server"));
 
-// ✅ Socket Events
-io.on("connection", (socket) => {
-  console.log("🟢 New user connected:", socket.id);
+    // Listen for messages
+    socket.on("message", (message) => {
+      setMessages((prev) => [...prev, message]);
+    });
 
-  socket.on("join", (room) => {
-    socket.join(room);
-    console.log(`User joined room: ${room}`);
-  });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
-  socket.on("send", (msg) => {
-    io.to(msg.room).emit("message", msg);
-  });
+  // 🚪 Join Group
+  const handleJoin = (e) => {
+    e.preventDefault();
+    if (name && group) {
+      socket.emit("join", group);
+      setJoined(true);
+    }
+  };
 
-  socket.on("leave", (room) => {
-    socket.leave(room);
-    console.log(`User left room: ${room}`);
-  });
+  // 📤 Send Message
+  const handleSend = (e) => {
+    e.preventDefault();
+    if (input.trim()) {
+      const msgData = { sender: name, text: input, room: group };
+      setMessages((prev) => [...prev, msgData]);
+      socket.emit("send", msgData);
+      setInput("");
+    }
+  };
 
-  socket.on("disconnect", () => {
-    console.log("🔴 User disconnected:", socket.id);
-  });
-});
+  // 🚪 Leave Group
+  const handleLeave = () => {
+    socket.emit("leave", group);
+    setJoined(false);
+    setMessages([]);
+    setGroup("");
+  };
 
-// ✅ Default route
-app.get("/", (req, res) => {
-  res.send("Socket.io server is running ⚡");
-});
+  // 🧹 Clear Chat
+  const handleClearChat = () => {
+    if (window.confirm("Clear all messages?")) setMessages([]);
+  };
 
-// ✅ Use Railway’s PORT environment variable
-const PORT = process.env.PORT || 5050;
-server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  return (
+    <div className="app">
+      {!joined ? (
+        <div className="login-container">
+          <div className="login-card">
+            <h1 className="neon-text">💠 NexaChat</h1>
+            <form onSubmit={handleJoin}>
+              <input
+                type="text"
+                placeholder="Group Name"
+                value={group}
+                onChange={(e) => setGroup(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Your Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <button type="submit">Join Chat</button>
+            </form>
+          </div>
+
+          <div className="right-side">
+            <h1 className="logo-glow">👨🏻‍💻 NexaChat</h1>
+            <p className="quote">"Where every message lights a spark ⚡"</p>
+          </div>
+        </div>
+      ) : (
+        <div className="chat-layout">
+          {/* Sidebar */}
+          <div className="sidebar">
+            <h2 className="sidebar-title">💬 Groups</h2>
+            <ul>
+              <li className="active-group">{group}</li>
+              <li>🌐 Global</li>
+              <li>🎮 Gaming</li>
+              <li>💼 Work</li>
+            </ul>
+
+            <button className="clear-btn" onClick={handleClearChat}>
+              🧹 Clear Chat
+            </button>
+
+            <button className="clear-btn" onClick={handleLeave}>
+              🚪 Leave Group
+            </button>
+          </div>
+
+          {/* Chat Box */}
+          <div className="chat-box">
+            <div className="chat-header">
+              <h2>{group} 💬</h2>
+              <span>Logged in as {name}</span>
+            </div>
+
+            <div className="chat-messages">
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`message ${msg.sender === name ? "own" : "other"}`}
+                >
+                  <strong>{msg.sender}: </strong> {msg.text}
+                </div>
+              ))}
+            </div>
+
+            <form className="chat-input" onSubmit={handleSend}>
+              <input
+                type="text"
+                placeholder="Type a message..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+              />
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
