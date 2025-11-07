@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import "./App.css";
 
 // 🚀 Your deployed backend URL on Railway
-const SOCKET_URL = "http://chatapp-server-production-4070.up.railway.app";
+const SOCKET_URL = "https://chatapp-server-production-4070.up.railway.app";
 
 let socket;
 
